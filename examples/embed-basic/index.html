@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chirpier Embed Example</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Georgia, serif;
+        background: linear-gradient(180deg, #f6f1e8 0%, #fffdf8 100%);
+        color: #1f2937;
+      }
+
+      .page {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      .panel {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid #d6cec0;
+        border-radius: 20px;
+        box-shadow: 0 24px 60px rgba(31, 41, 55, 0.08);
+        padding: 24px;
+      }
+
+      #chart-root {
+        min-height: 320px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>Vanilla Chirpier Embed</h1>
+      <p>Replace the event ID value with a real public event ID from your Chirpier project.</p>
+      <section class="panel">
+        <div id="chart-root"></div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { mountChirpierChart } from "@chirpier/embed";
+
+      const chart = mountChirpierChart("#chart-root", {
+        eventId: "your-event-id",
+        autoResize: true,
+        state: {
+          range: "1d",
+          compare: true,
+          view: "timeseries",
+          variant: "bar",
+        },
+        onError(error) {
+          console.error(error.code, error.message);
+        },
+      });
+
+      window.chirpierChart = chart;
+    </script>
+  </body>
+</html>

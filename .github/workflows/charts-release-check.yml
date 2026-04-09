@@ -1,0 +1,19 @@
+name: Charts Release Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install root deps
+        run: npm install
+      - name: Install embed deps
+        run: npm --prefix ./embed install
+      - name: Dry run release checks
+        run: npm run release:check

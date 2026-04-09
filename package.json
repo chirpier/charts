@@ -1,0 +1,76 @@
+{
+  "name": "@chirpier/charts",
+  "version": "0.2.2",
+  "description": "React embed wrapper for Chirpier hosted charts",
+  "workspaces": [
+    "embed"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "rm -rf dist embed/dist *.tsbuildinfo embed/*.tsbuildinfo",
+    "build": "npm run clean && tsc -b ./embed tsconfig.json",
+    "build:embed": "tsc -b ./embed",
+    "pack:embed": "npm --prefix ./embed run pack",
+    "pack:react": "npm pack --dry-run",
+    "release:check": "npm test && npm run typecheck && npm run build && npm run typecheck:embed && npm run build:embed && npm run pack:react && npm run pack:embed",
+    "typecheck": "npm run build:embed && tsc --noEmit -p tsconfig.json",
+    "typecheck:embed": "tsc --noEmit -p ./embed/tsconfig.json",
+    "test": "jest --runInBand"
+  },
+  "dependencies": {
+    "@chirpier/embed": "0.2.1"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@jest/globals": "^29.7.0",
+    "@testing-library/react": "^16.0.1",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@types/jest": "^29.5.12",
+    "typescript": "^4.9.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "directories": {
+    "doc": "docs",
+    "example": "examples"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chirpier/charts.git"
+  },
+  "keywords": [
+    "chirpier",
+    "dashboard",
+    "embed",
+    "react"
+  ],
+  "author": "Chirpier",
+  "license": "MIT"
+}
