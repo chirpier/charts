@@ -1,6 +1,6 @@
 {
   "name": "@chirpier/charts",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "React embed wrapper for Chirpier hosted charts",
   "workspaces": [
     "embed"
@@ -33,7 +33,7 @@
     "test": "jest --runInBand"
   },
   "dependencies": {
-    "@chirpier/embed": "0.2.1"
+    "@chirpier/embed": "0.3.0"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
