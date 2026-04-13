@@ -13,10 +13,7 @@
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "paths": {
-      "@chirpier/embed": ["./embed/src/index.ts"]
-    }
+    "skipLibCheck": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "src/**/*.test.ts", "src/**/*.test.tsx"],

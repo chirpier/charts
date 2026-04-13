@@ -1,8 +1,17 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { mountChirpierChart } from "../embed/client";
-import type { ChirpierChartRef, ChirpierEmbedError, ChirpierEmbedInstance, ChirpierEmbedOptions, ChirpierProps } from "../types/types";
+import type {
+  ChirpierChartRef,
+  ChirpierEmbedError,
+  ChirpierEmbedInstance,
+  ChirpierEmbedOptions,
+  ChirpierProps,
+  ChirpierRenderedEvent,
+} from "../types/types";
 
-function resolveChirpierChartState(props: ChirpierProps) {
+type ChirpierChartComponentProps = React.PropsWithoutRef<ChirpierProps>;
+
+function resolveChirpierChartState(props: ChirpierChartComponentProps) {
   const { state, range, aggregate, variant, compare, header, view, tracker } = props;
   const hasAliases = [range, aggregate, variant, compare, header, view, tracker].some((value) => value !== undefined);
 
@@ -20,7 +29,7 @@ function resolveChirpierChartState(props: ChirpierProps) {
   };
 }
 
-function toEmbedOptions(props: ChirpierProps): ChirpierEmbedOptions {
+function toEmbedOptions(props: ChirpierChartComponentProps): ChirpierEmbedOptions {
   const {
     aggregate,
     compare,
@@ -47,13 +56,17 @@ function toCssDimension(value: number | string | undefined, fallback?: string) {
   return typeof value === "number" ? `${value}px` : String(value);
 }
 
-function resolveResizeMode(props: ChirpierProps) {
+function resolveResizeMode(props: ChirpierChartComponentProps) {
   if (props.resizeMode) return props.resizeMode;
   if (props.autoResize === false) return "fixed" as const;
   return "auto" as const;
 }
 
-function applyIframeSizing(iframe: HTMLIFrameElement, props: ChirpierProps, resizeMode: ReturnType<typeof resolveResizeMode>) {
+function applyIframeSizing(
+  iframe: HTMLIFrameElement,
+  props: ChirpierChartComponentProps,
+  resizeMode: ReturnType<typeof resolveResizeMode>,
+) {
   iframe.width = String(props.width ?? "100%");
   iframe.style.width = toCssDimension(props.width, "100%") ?? "100%";
   iframe.style.maxWidth = "100%";
@@ -118,11 +131,11 @@ export const ChirpierChart = forwardRef<ChirpierChartRef, ChirpierProps>(functio
 
     const instance = mountChirpierChart(containerRef.current, toEmbedOptions({
       ...props,
-      onError: (error) => {
+      onError: (error: ChirpierEmbedError) => {
         setRenderError(error);
         onErrorRef.current?.(error);
       },
-      onRendered: (event) => {
+      onRendered: (event: ChirpierRenderedEvent) => {
         setHasRendered(true);
         setRenderError(null);
         onRenderedRef.current?.(event);

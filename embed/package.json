@@ -1,6 +1,6 @@
 {
   "name": "@chirpier/embed",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "Framework-agnostic Chirpier hosted chart embed client",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -20,6 +20,8 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run typecheck",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "pack": "npm pack --dry-run"
   },

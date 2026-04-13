@@ -1,6 +1,6 @@
 {
   "name": "@chirpier/charts",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "React embed wrapper for Chirpier hosted charts",
   "workspaces": [
     "embed"
@@ -27,13 +27,15 @@
     "build:embed": "tsc -b ./embed",
     "pack:embed": "npm --prefix ./embed run pack",
     "pack:react": "npm pack --dry-run",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm test && npm run typecheck && npm run typecheck:embed",
     "release:check": "npm test && npm run typecheck && npm run build && npm run typecheck:embed && npm run build:embed && npm run pack:react && npm run pack:embed",
     "typecheck": "npm run build:embed && tsc --noEmit -p tsconfig.json",
     "typecheck:embed": "tsc --noEmit -p ./embed/tsconfig.json",
     "test": "jest --runInBand"
   },
   "dependencies": {
-    "@chirpier/embed": "0.3.0"
+    "@chirpier/embed": "0.3.2"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
