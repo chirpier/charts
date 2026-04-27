@@ -86,19 +86,45 @@ function applyIframeSizing(
 }
 
 export const ChirpierChart = forwardRef<ChirpierChartRef, ChirpierProps>(function ChirpierChart(props, ref) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const instanceRef = useRef<ChirpierEmbedInstance | null>(null);
   const resizeMode = resolveResizeMode(props);
   const resolvedState = useMemo(() => resolveChirpierChartState(props), [props.aggregate, props.compare, props.header, props.range, props.state, props.tracker, props.variant, props.view]);
   const [hasRendered, setHasRendered] = useState(false);
   const [renderError, setRenderError] = useState<ChirpierEmbedError | null>(null);
+  const [observedInView, setObservedInView] = useState(true);
   const onRenderedRef = useRef(props.onRendered);
   const onErrorRef = useRef(props.onError);
+  const resolvedInView = props.inView ?? observedInView;
 
   useEffect(() => {
     onRenderedRef.current = props.onRendered;
     onErrorRef.current = props.onError;
   }, [props.onError, props.onRendered]);
+
+  useEffect(() => {
+    if (props.inView !== undefined) {
+      setObservedInView(props.inView);
+      return;
+    }
+
+    const element = wrapperRef.current;
+    if (!element || typeof IntersectionObserver === "undefined") {
+      setObservedInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setObservedInView(entry.isIntersecting && entry.intersectionRatio > 0);
+      },
+      { threshold: 0.01 },
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [props.inView]);
 
   const wrapperStyle = useMemo(() => {
     const style: React.CSSProperties = {
@@ -131,6 +157,7 @@ export const ChirpierChart = forwardRef<ChirpierChartRef, ChirpierProps>(functio
 
     const instance = mountChirpierChart(containerRef.current, toEmbedOptions({
       ...props,
+      inView: resolvedInView,
       onError: (error: ChirpierEmbedError) => {
         setRenderError(error);
         onErrorRef.current?.(error);
@@ -158,6 +185,7 @@ export const ChirpierChart = forwardRef<ChirpierChartRef, ChirpierProps>(functio
     instance.update({
       eventId: props.eventId,
       shareToken: props.shareToken,
+      inView: resolvedInView,
       state: resolvedState,
       theme: props.theme,
       resizeMode,
@@ -179,6 +207,7 @@ export const ChirpierChart = forwardRef<ChirpierChartRef, ChirpierProps>(functio
     props.className,
     props.eventId,
     props.height,
+    resolvedInView,
     props.maxHeight,
     props.minHeight,
     props.shareToken,
@@ -226,7 +255,7 @@ export const ChirpierChart = forwardRef<ChirpierChartRef, ChirpierProps>(functio
   }
 
   return (
-    <div style={wrapperStyle}>
+    <div ref={wrapperRef} style={wrapperStyle}>
       <div
         ref={containerRef}
         style={{

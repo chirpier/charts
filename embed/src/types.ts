@@ -62,6 +62,7 @@ export interface ChirpierEmbedError extends Error {
 export interface ChirpierEmbedOptions {
   eventId: string;
   shareToken?: string;
+  inView?: boolean;
   state?: ChirpierEventChartStateInput;
   resizeMode?: ChirpierResizeMode;
   width?: number | string;
@@ -83,6 +84,7 @@ export interface ChirpierEmbedOptions {
 export interface ChirpierEmbedUpdateOptions {
   eventId?: string;
   shareToken?: string;
+  inView?: boolean;
   state?: ChirpierEventChartStateInput;
   baseUrl?: string;
   theme?: ChirpierTheme;

@@ -151,4 +151,29 @@ describe("ChirpierChart", () => {
     });
     expect(getByText("Chart failed")).toBeTruthy();
   });
+
+  it("passes visibility updates through the embed client", () => {
+    const update = jest.fn();
+    const destroy = jest.fn();
+    const iframe = document.createElement("iframe");
+    (mountChirpierChart as jest.Mock).mockReturnValue({ iframe, update, destroy });
+
+    const { rerender } = render(
+      <ChirpierChart eventId="event-6" shareToken="share-6" inView={false} />,
+    );
+
+    expect(mountChirpierChart).toHaveBeenCalledWith(
+      expect.any(HTMLDivElement),
+      expect.objectContaining({ eventId: "event-6", shareToken: "share-6", inView: false }),
+    );
+    expect(update).toHaveBeenCalledWith(
+      expect.objectContaining({ eventId: "event-6", shareToken: "share-6", inView: false }),
+    );
+
+    rerender(<ChirpierChart eventId="event-6" shareToken="share-6" inView />);
+
+    expect(update).toHaveBeenLastCalledWith(
+      expect.objectContaining({ eventId: "event-6", shareToken: "share-6", inView: true }),
+    );
+  });
 });

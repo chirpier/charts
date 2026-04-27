@@ -150,6 +150,15 @@ function syncTheme(iframe, targetOrigin, embedId, theme) {
         payload: { theme },
     });
 }
+function syncVisibility(iframe, targetOrigin, embedId, inView) {
+    postMessageToIframe(iframe, targetOrigin, {
+        source: CHIRPIER_EMBED_SOURCE,
+        version: CHIRPIER_EMBED_VERSION,
+        embedId,
+        type: "updateVisibility",
+        payload: { inView: inView ?? true },
+    });
+}
 export function mountChirpierChart(container, options) {
     const root = typeof container === "string"
         ? document.querySelector(container)
@@ -206,6 +215,7 @@ export function mountChirpierChart(container, options) {
     const handleLoad = () => {
         const targetOrigin = getOrigin(currentOptions.baseUrl ?? getDefaultBaseUrl());
         syncTheme(iframe, targetOrigin, embedId, currentOptions.theme);
+        syncVisibility(iframe, targetOrigin, embedId, currentOptions.inView);
     };
     window.addEventListener("message", handleMessage);
     iframe.addEventListener("load", handleLoad);
@@ -240,6 +250,12 @@ export function mountChirpierChart(container, options) {
         if (next.theme) {
             const targetOrigin = getOrigin(currentOptions.baseUrl ?? getDefaultBaseUrl());
             syncTheme(iframe, targetOrigin, embedId, next.theme);
+            syncVisibility(iframe, targetOrigin, embedId, currentOptions.inView);
+            return;
+        }
+        if (next.inView !== undefined) {
+            const targetOrigin = getOrigin(currentOptions.baseUrl ?? getDefaultBaseUrl());
+            syncVisibility(iframe, targetOrigin, embedId, currentOptions.inView);
         }
     };
     const destroy = () => {
